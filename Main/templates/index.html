@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>FounderMap AI - Empowering Entrepreneurs</title>
+    <link rel="icon" type="image/png" href="{% static 'logo/Favicon.png' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -85,7 +87,7 @@
             border-radius: 30px;
             text-decoration: none;
             transition: all 0.3s ease;
-            animation: fadeInLeft 1.6s ease-in-out;
+            /* Removed animation for 'Get Started' button */
         }
 
         .cta-button:hover {
@@ -128,10 +130,11 @@
             display: flex;
             justify-content: space-between;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .step {
-            width: 24%;
+            width: 22%;
             padding: 30px;
             background-color: #f5f5f5;
             border-radius: 10px;
@@ -229,13 +232,13 @@
             <h1>Empowering Entrepreneurs with Intelligent Mind Mapping</h1>
             <p>Turn your ideas into structured, actionable business plans with FounderMap AI.</p>
             <div class="cta-buttons">
-                <a href="#how-it-works" class="cta-button">Get Started</a>
+                <a href="http://localhost:8501" class="cta-button" target="_blank">Get Started</a>
                 <a href="#demo" class="cta-button secondary">Watch Demo</a>
             </div>
         </div>
         <div class="hero-3d">
             <!-- Replace this with a real 3D map image or element -->
-            <img src="https://via.placeholder.com/450x450.png?text=3D+Brain+Mind+Map" alt="3D Brain Mind Map">
+            <img src="{% static 'FounderMap AI.jpeg' %}" alt="3D Brain Mind Map">
         </div>
     </section>
 
@@ -245,38 +248,48 @@
         <div class="steps">
             <div class="step">
                 <img src="https://via.placeholder.com/100x100.png?text=Step+1" alt="Step 1">
-                <h3>Input Your Startup Idea</h3>
-                <p>Begin by entering your core business idea into the platform to start mind mapping.</p>
+                <h3>Choose a Template</h3>
+                <p>Select a suitable template from the navbar to start your mind map.</p>
             </div>
             <div class="step">
                 <img src="https://via.placeholder.com/100x100.png?text=Step+2" alt="Step 2">
+                <h3>Type Your Idea</h3>
+                <p>Enter your core business idea into the designated area.</p>
+            </div>
+            <div class="step">
+                <img src="https://via.placeholder.com/100x100.png?text=Step+3" alt="Step 3">
+                <h3>Choose Mind Map Options</h3>
+                <p>Select from available mind map options to tailor the visualization to your needs.</p>
+            </div>
+            <div class="step">
+                <img src="https://via.placeholder.com/100x100.png?text=Step+4" alt="Step 4">
                 <h3>Analyze Key Factors</h3>
                 <p>FounderMap AI analyzes your idea and identifies key components for growth.</p>
             </div>
             <div class="step">
-                <img src="https://via.placeholder.com/100x100.png?text=Step+3" alt="Step 3">
+                <img src="https://via.placeholder.com/100x100.png?text=Step+5" alt="Step 5">
                 <h3>Generate a Mind Map</h3>
                 <p>A detailed mind map is generated, helping you visualize your strategy.</p>
             </div>
             <div class="step">
-                <img src="https://via.placeholder.com/100x100.png?text=Step+4" alt="Step 4">
+                <img src="https://via.placeholder.com/100x100.png?text=Step+6" alt="Step 6">
                 <h3>Visualize Your Business Strategy</h3>
-                <p>Translate your ideas into actionable business plans and roadmaps.</p>
+                <p>Use the interactive mind map to refine your business strategy and make data-driven decisions.</p>
             </div>
         </div>
     </section>
 
-    <!-- Key Features Section -->
+    <!-- Features Section -->
     <section class="features">
-        <h2>Key Features</h2>
+        <h2>Features</h2>
         <div class="feature-cards">
             <div class="feature-card">
-                <h3>Mind Mapping</h3>
-                <p>FounderMap AI creates detailed, interactive mind maps for every stage of your startup journey.</p>
+                <h3>Interactive Mind Maps</h3>
+                <p>Visualize and organize your ideas dynamically with interactive maps.</p>
             </div>
             <div class="feature-card">
-                <h3>Business Strategy</h3>
-                <p>Analyze and structure your business plan with smart tools and insights.</p>
+                <h3>Customizable Templates</h3>
+                <p>Choose from a variety of templates tailored to different business needs.</p>
             </div>
             <div class="feature-card">
                 <h3>AI Insights</h3>

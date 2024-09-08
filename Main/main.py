@@ -35,8 +35,7 @@ st.write("""
 Begin by exploring the interactive features and tools available in FounderMap AI. Enter your ideas and start creating mind maps that will guide your startup towards success.
 """)
 
-# Construct the absolute path to the logo image
-logo_path = os.path.join("..", "Static", "FounderMap AI.jpeg")
+logo_path = "https://i.ibb.co/4YbJCtd/Founder-Map-AI.jpg"
 
 st.sidebar.image(
     logo_path, 

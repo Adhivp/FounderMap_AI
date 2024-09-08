@@ -64,7 +64,7 @@ if st.button("Generate Mind Map"):
         st.warning("Please enter some data or a rough idea.")
 
 # Construct the absolute path to the logo image
-logo_path = os.path.join("..", "Static", "FounderMap AI.jpeg")
+logo_path = "https://i.ibb.co/4YbJCtd/Founder-Map-AI.jpg"
 
 st.sidebar.image(
     logo_path, 
