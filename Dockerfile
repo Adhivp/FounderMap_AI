@@ -25,4 +25,4 @@ COPY . /app/
 EXPOSE 8000 8501
 
 # Run the application
-CMD ["sh", "-c", "python3 manage.py runserver 0.0.0.0:8000 & streamlit run main.py"]
+CMD ["sh", "-c", "python3 manage.py runserver 0.0.0.0:8000 & cd Main && streamlit run main.py"]
