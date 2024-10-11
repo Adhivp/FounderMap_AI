@@ -36,12 +36,8 @@ FounderMap AI does not require any configuration. It is a user-friendly tool des
 
 ### Contributing
 
-FounderMap AI is an open-source project. Contributions from the community are welcome. Please refer to the [contributing guidelines](CONTRIBUTING.md) for details on how to contribute to the project.
+FounderMap AI is an open-source project. Contributions from the community are welcome. 
 
 ### License
 
 FounderMap AI is licensed under the MIT License.
-
-### Contact Information
-
-For any inquiries or support, please contact the development team at [support@foundermap.ai](mailto:support@foundermap.ai).
