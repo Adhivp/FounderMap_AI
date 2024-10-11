@@ -7,6 +7,7 @@ __pycache__/
 *.db
 *.sqlite3
 
+/Founder_venv
 # Django
 *.log
 local_settings.py
@@ -25,7 +26,7 @@ ENV/
 *.venv
 
 # IDEs and editors
-.vscode/
+
 .idea/
 *.sublime-workspace
 *.sublime-project
@@ -38,3 +39,5 @@ Thumbs.db
 *.bak
 *.swp
 *.tmp
+
+.python_packages

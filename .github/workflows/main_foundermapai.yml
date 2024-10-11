@@ -35,25 +35,42 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Check if environment exists
+        id: check_env
+        run: |
+          if az containerapp env show --name foundermapaiContainerEnv --resource-group Foundermap_ai; then
+            echo "Environment exists"
+            echo "env_exists=true" >> $GITHUB_ENV
+          else
+            echo "Environment does not exist"
+            echo "env_exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Environment if it doesn't exist
+        if: env.env_exists == 'false'
+        run: |
+          echo "Creating Azure Container App environment..."
+          az containerapp env create --name foundermapaiContainerEnv --resource-group Foundermap_ai --location eastus
+
       - name: Check if container app exists
         id: check_app
         run: |
-          if az containerapp show --resource-group Foundermap_ai --name foundermapai; then
+          if az containerapp show --resource-group Foundermap_ai --name foundermapaicontainerapp; then
             echo "Container App exists"
-            echo "exists=true" >> $GITHUB_ENV
+            echo "app_exists=true" >> $GITHUB_ENV
           else
             echo "Container App does not exist"
-            echo "exists=false" >> $GITHUB_ENV
+            echo "app_exists=false" >> $GITHUB_ENV
           fi
 
       - name: Deploy to Azure Container Apps
         run: |
-          if [ "${{ env.exists }}" = "true" ]; then
+          if [ "${{ env.app_exists }}" = "true" ]; then
             echo "Updating existing Container App"
-            az containerapp update --name foundermapai --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --ingress external
+            az containerapp update --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --ingress external
           else
             echo "Creating a new Container App"
-            az containerapp create --name foundermapai --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --target-port 8501 --ingress external --environment MyContainerAppEnv --registry-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+            az containerapp create --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --target-port 8501 --ingress external --environment MyContainerAppEnv --registry-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
           fi
 
       - name: Wait for Container App to Start
@@ -63,10 +80,10 @@ jobs:
 
       - name: Get Container App Logs
         run: |
-          echo "Fetching logs for container app foundermapai..."
-          az containerapp logs show --name foundermapai --resource-group Foundermap_ai
+          echo "Fetching logs for container app foundermapaicontainerapp..."
+          az containerapp logs show --name foundermapaicontainerapp --resource-group Foundermap_ai
 
       - name: Print Container Logs in GitHub Actions
         run: |
           echo "Printing logs directly in GitHub Actions..."
-          az containerapp logs show --name foundermapai --resource-group Foundermap_ai --follow
+          az containerapp logs show --name foundermapaicontainerapp --resource-group Foundermap_ai --follow
