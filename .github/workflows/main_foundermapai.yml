@@ -67,7 +67,7 @@ jobs:
         run: |
           if [ "${{ env.app_exists }}" = "true" ]; then
             echo "Updating existing Container App"
-            az containerapp update --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --ingress external
+            az containerapp update --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest
           else
             echo "Creating a new Container App"
             az containerapp create --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --target-port 8501 --ingress external --environment MyContainerAppEnv --registry-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
