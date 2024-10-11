@@ -48,8 +48,10 @@ jobs:
 
       - name: Deploy to ACI
         run: |
-          if [ "$exists" = "true" ]; then
+          if [ "${{ env.exists }}" = "true" ]; then
+            echo "Updating existing container"
             az container update --resource-group <resource-group> --name my-container-app --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest
           else
+            echo "Creating a new container"
             az container create --resource-group <resource-group> --name my-container-app --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --cpu 1 --memory 1 --ports 8000 8501 --registry-login-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
           fi
