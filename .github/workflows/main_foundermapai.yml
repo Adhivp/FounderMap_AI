@@ -55,3 +55,17 @@ jobs:
             echo "Creating a new container"
             az container create --resource-group Foundermap_ai --name foundermapai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --cpu 1 --memory 1 --ports 8000 8501 --registry-login-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
           fi
+
+      - name: Wait for Container to Start
+        run: |
+          echo "Waiting for container to start..."
+          sleep 60  # Adjust this delay depending on how long your container takes to start
+
+      - name: Get Container Logs
+        run: |
+          echo "Fetching logs for container foundermapai..."
+          if az container logs --resource-group Foundermap_ai --name foundermapai; then
+            echo "Logs fetched successfully."
+          else
+            echo "No logs available or container does not exist."
+          fi
