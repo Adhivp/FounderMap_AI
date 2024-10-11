@@ -35,6 +35,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Check if container exists
+        id: check_container
+        run: |
+          if az container show --resource-group <resource-group> --name my-container-app; then
+            echo "Container exists"
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "Container does not exist"
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
       - name: Deploy to ACI
         run: |
-          az container create --resource-group <resource-group> --name my-container-app --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --cpu 1 --memory 1 --ports 8000 8501 --registry-login-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          if [ "$exists" = "true" ]; then
+            az container update --resource-group <resource-group> --name my-container-app --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest
+          else
+            az container create --resource-group <resource-group> --name my-container-app --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --cpu 1 --memory 1 --ports 8000 8501 --registry-login-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          fi
