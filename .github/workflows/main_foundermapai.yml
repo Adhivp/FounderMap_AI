@@ -50,7 +50,7 @@ jobs:
         if: env.env_exists == 'false'
         run: |
           echo "Creating Azure Container App environment..."
-          az containerapp env create --name MyContainerAppEnv --resource-group Foundermap_ai --location eastus
+          az containerapp env create --name MyContainerAppEnv --resource-group Foundermap_ai --location southindia
 
       - name: Check if container app exists
         id: check_app
