@@ -6,69 +6,48 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Log in to Azure Container Registry
-        run: |
-          echo "${{ secrets.AZURE_REGISTRY_PASSWORD }}" | docker login ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io -u ${{ secrets.AZURE_REGISTRY_USERNAME }} --password-stdin
-
-      - name: Build the Docker image
-        run: |
-          docker build -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest .
-
-      - name: Push the Docker image
-        run: |
-          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Azure Login
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Check if environment exists
-        id: check_env
+      - name: Build the Docker image
         run: |
-          if az containerapp env show --name MyContainerAppEnv --resource-group Foundermap_ai; then
-            echo "Environment exists"
-            echo "env_exists=true" >> $GITHUB_ENV
-          else
-            echo "Environment does not exist"
-            echo "env_exists=false" >> $GITHUB_ENV
-          fi
+          docker build -t myapp:latest .
 
-      - name: Create Environment if it doesn't exist
-        if: env.env_exists == 'false'
+      - name: Export Docker image to a tarball
         run: |
-          echo "Creating Azure Container App environment..."
-          az containerapp env create --name MyContainerAppEnv --resource-group Foundermap_ai --location southindia
-
-      - name: Check if container app exists
-        id: check_app
-        run: |
-          if az containerapp show --resource-group Foundermap_ai --name foundermapaicontainerapp; then
-            echo "Container App exists"
-            echo "app_exists=true" >> $GITHUB_ENV
-          else
-            echo "Container App does not exist"
-            echo "app_exists=false" >> $GITHUB_ENV
-          fi
+          docker save myapp:latest -o myapp.tar
 
       - name: Deploy to Azure Container Apps
         run: |
-          if [ "${{ env.app_exists }}" = "true" ]; then
+          # Create an environment if it doesn't exist
+          if ! az containerapp env show --name MyContainerAppEnv --resource-group Foundermap_ai; then
+            echo "Creating Azure Container App environment..."
+            az containerapp env create --name MyContainerAppEnv --resource-group Foundermap_ai --location southindia
+          fi
+
+          # Check if the container app exists
+          if az containerapp show --resource-group Foundermap_ai --name foundermapaicontainerapp; then
             echo "Updating existing Container App"
-            az containerapp update --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest
+            # Update the container app using the built image
+            az containerapp update --name foundermapaicontainerapp \
+                                   --resource-group Foundermap_ai \
+                                   --image docker-archive://myapp.tar
           else
             echo "Creating a new Container App"
-            az containerapp create --name foundermapaicontainerapp --resource-group Foundermap_ai --image ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/myapp:latest --target-port 8000 --target-port 8501 --ingress external --environment MyContainerAppEnv --registry-server ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.AZURE_REGISTRY_USERNAME }} --registry-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+            # Create the container app using the built image
+            az containerapp create --name foundermapaicontainerapp \
+                                   --resource-group Foundermap_ai \
+                                   --image docker-archive://myapp.tar \
+                                   --target-port 8000 \
+                                   --ingress external \
+                                   --environment MyContainerAppEnv
           fi
