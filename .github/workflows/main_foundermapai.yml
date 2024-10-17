@@ -40,6 +40,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Make package public
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /user/packages/container/${{ env.IMAGE_NAME }}/versions/$(echo ${{ steps.meta.outputs.tags }} | cut -d':' -f2) \
+            -f visibility='public'
 
       - name: Make package public
         run: |
